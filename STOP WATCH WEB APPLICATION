@@ -1,0 +1,97 @@
+HTML:
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stopwatch</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Stopwatch</h1>
+<div id="display">00:00:00</div>
+<button id="start">Start</button>
+<button id="pause">Pause</button>
+<button id="reset">Reset</button>
+<button id="lap">Lap</button>
+<ul id="laps"></ul>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+CSS (in style.css file):
+
+body {
+font-family: Arial, sans-serif;
+}
+
+#display {
+font-size: 48px;
+font-weight: bold;
+margin-bottom: 20px;
+}
+
+button {
+width: 100px;
+height: 30px;
+margin: 10px;
+}
+
+#laps {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+JavaScript (in script.js file):
+
+let startTime = 0;
+let currentTime = 0;
+let intervalId = null;
+let lapCount = 0;
+
+document.getElementById('start').addEventListener('click', startTimer);
+document.getElementById('pause').addEventListener('click', pauseTimer);
+document.getElementById('reset').addEventListener('click', resetTimer);
+document.getElementById('lap').addEventListener('click', lapTimer);
+
+function startTimer() {
+startTime = Date.now() - currentTime;
+intervalId = setInterval(updateTimer, 1000);
+}
+
+function pauseTimer() {
+clearInterval(intervalId);
+}
+
+function resetTimer() {
+clearInterval(intervalId);
+currentTime = 0;
+lapCount = 0;
+document.getElementById('display').innerHTML = '00:00:00';
+document.getElementById('laps').innerHTML = '';
+}
+
+function lapTimer() {
+const lapTime = formatTime(currentTime);
+const lapElement = document.createElement('li');
+lapElement.innerHTML = `Lap ${lapCount + 1}: ${lapTime}`;
+document.getElementById('laps').appendChild(lapElement);
+lapCount++;
+}
+
+function updateTimer() {
+currentTime = Date.now() - startTime;
+  document.getElementById('display').innerHTML = formatTime(currentTime);
+}
+
+function formatTime(time) {
+const hours = Math.floor(time / 3600000);
+const minutes = Math.floor((time % 3600000) / 60000);
+const seconds = Math.floor((time % 60000) / 1000);
+return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+}
+
+function padZero(value) {
+return (value < 10 ? '0' : '') + value;
+}
